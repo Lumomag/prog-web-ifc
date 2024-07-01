@@ -1,35 +1,42 @@
 const express = require('express');
 const cors = require('cors');
+const { getDatabaseInstance } = require('./database.js');
 
 const app = express();
 
+async function main() {
+  app.use(express.json());
+  app.use(express.static('public'));
 
-app.use(express.static('public'));
+  app.use(
+    cors({
+      origin: '*',
+    })
+  );
 
-app.use(
-  cors({
-    origin: '*',
-  })
-);
+  app.get('/', (req, res) => {
+    res.send('Olá, mundo!');
+  });
 
-app.get('/', (req, res) => {
-  res.send('Olá, mundo!');
-});
+  app.get('/tarefas', async function (req, res) {
+    const db = await getDatabaseInstance();
+    const result = await db.all(`SELECT * FROM todo`);
+    res.send(result);
+  });
 
-app.get('/sobre', (req, res) => {
-  res.send('Está é a página sobre');
-});
+  app.post('/tarefas', async function (req, res) {
+    const db = await getDatabaseInstance();
+    const descricao = req.body.descricao;
+    const result = await db.run(
+      `INSERT INTO todo(descricao) VALUES(?)`,
+      descricao
+    );
+    res.send(result);
+  });
 
-app.get('/tarefas', (req, res) => {
-  const tarefas = require('./public/tarefas.json');
-  res.json(tarefas);
-});
+  app.listen(3000, () => {
+    console.log('Servidor rodando em http://localhost:3000');
+  });
+}
 
-app.post('/novaTarefa', (req, res)=>{
-  console.log(req.body);
-  res.send("A req POST para novaTarefa/ chegou")
-})
-
-app.listen(3000, () => {
-  console.log('Servidor rodando em http://localhost:3000');
-});
+main();

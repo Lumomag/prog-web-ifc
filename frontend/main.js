@@ -53,8 +53,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function enviarNovaTarefa() {
-  fetch('http://localhost:3000/novaTarefa', {
+function enviarTarefa() {
+  fetch('http://localhost:3000/tarefas', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ descricao: inputTarefa.value }),
