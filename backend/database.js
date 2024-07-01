@@ -4,7 +4,7 @@ const { open } = require('sqlite');
 let instance = null;
 
 async function getDatabaseInstance() {
-  if (instance) {
+  if (instance) 
     return instance;
 
     const db = await open({
@@ -21,6 +21,6 @@ async function getDatabaseInstance() {
 
     instance = db;
     return db;
-  }
+  
 }
 module.exports = { getDatabaseInstance };
